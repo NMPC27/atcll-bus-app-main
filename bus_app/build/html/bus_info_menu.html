@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BusInfoMenu &mdash; BusAppDoc 1.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Lines" href="lines.html" />
+    <link rel="prev" title="MapScreen" href="map_screen.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> BusAppDoc
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="app.html">App</a></li>
+<li class="toctree-l1"><a class="reference internal" href="appjson.html">App json</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="screens.html">Screens</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="map_screen.html">MapScreen</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">BusInfoMenu</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="lines.html">Lines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bus_schedule.html">BusSchedule</a></li>
+<li class="toctree-l2"><a class="reference internal" href="live_traffic.html">LiveTraffic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="about.html">About</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="scripts.html">Scripts</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">BusAppDoc</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="screens.html">Screens</a> &raquo;</li>
+          <li><a href="map_screen.html">MapScreen</a> &raquo;</li>
+      <li>BusInfoMenu</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/bus_info_menu.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="businfomenu">
+<h1>BusInfoMenu<a class="headerlink" href="#businfomenu" title="Permalink to this headline"></a></h1>
+<p>This class serves to display the information about the bus to the user.
+The ID and position of the bus is given by props and the other data such as line, eta and next_stop are received by a subscrition to ORION through the script sub_PECI(see scripts-&gt;subscribe_PECI)</p>
+<p>Props:</p>
+<ul class="simple">
+<li><p>newID: the id of the bus that was cliked</p></li>
+<li><p>buses: all the data of the current detected buses</p></li>
+<li><p>token: token necessary to connect to ORION</p></li>
+</ul>
+<p>We determine the index of the bus that was clicked to get its coresponding data.
+If we dont find the bus in the list of buses, it means that we stoped detecting the bus that were cliked.
+Otherwise we display the bus info (line, speed, eta and next stop)</p>
+<p>To get the bus info, we first run the script sub_PECI(see scripts-&gt;subscribe_PECI) and filter the data received with the filter_peci function and update the state with the line, eta and next_stop of the selected bus.
+Then we get the data of the bus that was clicked and display it.</p>
+<p><a href="#id1"><span class="problematic" id="id2">*</span></a>/</p>
+<ul class="simple">
+<li><p>List.Item: see <a class="reference external" href="https://callstack.github.io/react-native-paper/list-item.html">https://callstack.github.io/react-native-paper/list-item.html</a></p></li>
+<li><p>List.Icon: see <a class="reference external" href="https://callstack.github.io/react-native-paper/list-icon.html">https://callstack.github.io/react-native-paper/list-icon.html</a></p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  export default class BusInfoMenu extends Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      id:1,
+      linha:&quot;NaN&quot;,
+      speed:0.0,
+      eta:&quot;NaN&quot;,
+      next_stop:&quot;NaN&quot;,
+    };
+  }
+
+
+  render() {
+
+    newID = this.props.newID;
+    buses = this.props.buses;
+
+    index = buses.findIndex(x =&gt; x.id === newID);
+
+    setTimeout(() =&gt; {
+
+          sub_PECI(this.props.token).then(
+              res =&gt; {this.setState(filter_peci(res));}
+          )
+
+          function filter_peci(value){
+              const d = new Date();
+
+              for (let i=0;i&lt;value.data.length; i++){
+                  if (value.data[i].busData.value.bus_id == newID){
+
+                    var now=Date.now()
+                    var min=999999999
+                    var tmp_obj={
+                        stop: &quot;Nan&quot;,
+                        eta: 0
+                    }
+
+                    Object.entries(value.data[i].busData.value.prediction).forEach(([key, value2]) =&gt; {
+                        var arr_stop= value2.split(&quot;:&quot;);
+
+                        var date_str= d.getMonth()+1+&quot;/&quot;+d.getDate()+&quot;/&quot;+d.getFullYear()
+                        var tmp=Date.parse(date_str)
+                        var timeOfStop= tmp+(parseInt(arr_stop[0])*3600+parseInt(arr_stop[1])*60+parseInt(arr_stop[2]))*1000
+
+                        var tmp=timeOfStop-now
+                        if (tmp&gt;0 &amp;&amp; tmp&lt;min){
+                            min=tmp
+                            tmp_obj.stop=key
+                            tmp_obj.eta=Math.round(tmp/1000)
+                        }
+
+                    })
+
+                    var stop_idx = StopsData().findIndex(x =&gt; parseInt(x.id) === parseInt(tmp_obj.stop));
+                    return {
+                      linha: value.data[i].busData.value.line,
+                      eta: tmp_obj.eta,
+                      next_stop: StopsData()[stop_idx].name
+                    }
+                  }
+              }
+
+              return {
+                linha:&quot;Nan&quot;,
+                eta:&quot;Nan&quot;,
+                next_stop:&quot;Nan&quot;
+              };
+          }
+    }, 1000);
+
+    if( index==-1 ){ //! fix de bug - crash quando o bus desaparece
+      return ( &lt;View/&gt; );
+    }
+
+    return (
+      &lt;View&gt;
+          &lt;List.Item
+              title={&quot;Linha: &quot; + this.state.linha}
+              left={props =&gt; &lt;List.Icon {...props} icon=&quot;bus&quot; /&gt;}
+          /&gt;
+          &lt;List.Item
+              title={&quot;Velocidade: &quot; + buses[index].speed + &quot; Km/h&quot;}
+              left={props =&gt; &lt;List.Icon {...props} icon=&quot;speedometer&quot; /&gt;}
+          /&gt;
+          &lt;List.Item
+              title={&quot;ETA: &quot; + this.state.eta}
+              left={props =&gt; &lt;List.Icon {...props} icon=&quot;clock&quot; /&gt;}
+          /&gt;
+          &lt;List.Item
+              title={&quot;Prox par: &quot; + this.state.next_stop}
+              left={props =&gt; &lt;List.Icon {...props} icon=&quot;bus-stop&quot; /&gt;}
+          /&gt;
+
+      &lt;/View&gt;
+    );
+  }
+}
+</pre></div>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="map_screen.html" class="btn btn-neutral float-left" title="MapScreen" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="lines.html" class="btn btn-neutral float-right" title="Lines" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, PECI.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LiveTraffic &mdash; BusAppDoc 1.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="RoadInfoMenu" href="road_info_menu.html" />
+    <link rel="prev" title="BusSchedule" href="bus_schedule.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> BusAppDoc
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="app.html">App</a></li>
+<li class="toctree-l1"><a class="reference internal" href="appjson.html">App json</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="screens.html">Screens</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="map_screen.html">MapScreen</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lines.html">Lines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bus_schedule.html">BusSchedule</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">LiveTraffic</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="road_info_menu.html">RoadInfoMenu</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="about.html">About</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="scripts.html">Scripts</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">BusAppDoc</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="screens.html">Screens</a> &raquo;</li>
+      <li>LiveTraffic</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/live_traffic.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="livetraffic">
+<h1>LiveTraffic<a class="headerlink" href="#livetraffic" title="Permalink to this headline"></a></h1>
+<p>This is the Live Traffic screen of the App.</p>
+<p>In the state of this class we have the following variables:</p>
+<ul class="simple">
+<li><p>token: the token that we generate to be able to do requests to the orion service.</p></li>
+<li><p>road_clicked_id: the id of the road that we clicked on the map.</p></li>
+<li><p>user: is the current location of the user that will be updated by Location.watchPositionAsync( … this.setState({ user: …} ) )</p></li>
+<li><p>count: its used to only focus the user position once, otherwise the map will be focused every time in the user location.</p></li>
+<li><p>dict: its an dictionary with each road here we have a radar. For each road we have 2 dictionarys, one for each way.</p></li>
+</ul>
+<p>On load ( componentDidMount ) of this class we start looking for the user’s location and update the state with it.
+The method watchPositionAsync subscribes to location updates from the device therefore the location will be updated in real time.
+(see <a class="reference external" href="https://docs.expo.dev/versions/latest/sdk/location/#locationwatchpositionasyncoptions-callback">https://docs.expo.dev/versions/latest/sdk/location/#locationwatchpositionasyncoptions-callback</a> )</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">componentDidMount</span><span class="p">(){</span><span class="w"></span>
+<span class="w">    </span><span class="nx">Location</span><span class="p">.</span><span class="nx">watchPositionAsync</span><span class="p">({</span><span class="nx">enableHighAccuracy</span><span class="o">:</span><span class="kc">true</span><span class="p">},</span><span class="w"></span>
+<span class="w">        </span><span class="nx">location</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="nx">setState</span><span class="p">({</span><span class="nx">user</span><span class="o">:</span><span class="p">{</span><span class="nx">lat</span><span class="o">:</span><span class="w"> </span><span class="nx">location</span><span class="p">.</span><span class="nx">coords</span><span class="p">.</span><span class="nx">latitude</span><span class="w"> </span><span class="p">,</span><span class="nx">lon</span><span class="o">:</span><span class="w"> </span><span class="nx">location</span><span class="p">.</span><span class="nx">coords</span><span class="p">.</span><span class="nx">longitude</span><span class="p">}});</span><span class="w"></span>
+<span class="w">    </span><span class="p">});</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</pre></div>
+</div>
+<p>Inside the render() is generated the token that alows us to access the orion service of IT.
+Because answer from the service is not immediate we use promisses, when the device recives the answer from the orion service the token will be updated in the state to be used afterwards.
+(see scripts-&gt;token_generate for more details)</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">token</span><span class="o">==</span><span class="kc">null</span><span class="w"> </span><span class="p">){</span><span class="w"></span>
+<span class="w">    </span><span class="nx">generate_token</span><span class="p">().</span><span class="nx">then</span><span class="p">(</span><span class="w"></span>
+<span class="w">        </span><span class="nx">value</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">setState</span><span class="p">(</span><span class="w"> </span><span class="p">{</span><span class="nx">token</span><span class="o">:</span><span class="nx">value</span><span class="p">}</span><span class="w"> </span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</pre></div>
+</div>
+<p>To get the data from the orion service we use the token that we have generated in the previous step.
+To update the data from the buses we call the function sub() every second using the setTimeout(()=&gt; { code_here },1000) method.
+The function sub we parse the token generated in the previous step and returns a json with the data of all the radars.
+Before we update the state we need to filter the data received, in the filter_radar function we generate an dictionary to match our state data structure.
+In filter_orion we also check if the info of the radar was detected at least 5 seconds ago, if it was we update the state with the new data. (if ( timeOfData &gt; (now-timeToDeleteInfo) ))
+In the calculate_speed function we calculate the the average speed, the color of the line and the total vehicles in the radar. We determine the color of the line based in the number of vehicles and the speed detected in the radar.
+(see scripts-&gt;subscribe_orion for more details)</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">setTimeout</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">   </span><span class="nx">sub_radar</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">token</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="w"></span>
+
+<span class="w">         </span><span class="nx">res</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">setState</span><span class="p">(</span><span class="w"> </span><span class="p">{</span><span class="nx">dict</span><span class="o">:</span><span class="nx">filter_radar</span><span class="p">(</span><span class="nx">res</span><span class="p">)}</span><span class="w"> </span><span class="p">));</span><span class="w"></span>
+
+<span class="w">         </span><span class="kd">function</span><span class="w"> </span><span class="nx">filter_radar</span><span class="p">(</span><span class="nx">res</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+
+<span class="w">            </span><span class="kd">var</span><span class="w"> </span><span class="nx">dict</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">               </span><span class="nx">p1_1</span><span class="o">:</span><span class="p">{</span><span class="w">  </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="mf">11</span><span class="p">,</span><span class="w"></span>
+<span class="w">                        </span><span class="nx">color</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#00FF00&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                        </span><span class="nx">speed</span><span class="o">:</span><span class="w"> </span><span class="o">-</span><span class="mf">1</span><span class="p">,</span><span class="w"></span>
+<span class="w">                        </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Rua da pega&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">                        </span><span class="nx">vehicleCount</span><span class="o">:</span><span class="w"> </span><span class="mf">0</span><span class="w"></span>
+<span class="w">                     </span><span class="p">},</span><span class="w"> </span><span class="p">...</span><span class="w"></span>
+<span class="w">            </span><span class="p">};</span><span class="w"></span>
+
+<span class="w">            </span><span class="kd">var</span><span class="w"> </span><span class="nx">now</span><span class="o">=</span><span class="nb">Date</span><span class="p">.</span><span class="nx">now</span><span class="p">()</span><span class="w"></span>
+<span class="w">            </span><span class="kd">var</span><span class="w"> </span><span class="nx">timeToDeleteInfo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">5</span><span class="o">*</span><span class="mf">1000</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">            </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">let</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nx">res</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+
+<span class="w">               </span><span class="kd">var</span><span class="w"> </span><span class="nx">timeOfData</span><span class="o">=</span><span class="w"> </span><span class="nb">Date</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">res</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">dateObserved</span><span class="p">.</span><span class="nx">value</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">               </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="nx">timeOfData</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="p">(</span><span class="nx">now</span><span class="o">-</span><span class="nx">timeToDeleteInfo</span><span class="p">)</span><span class="w"> </span><span class="p">){</span><span class="w"></span>
+
+<span class="w">                     </span><span class="kd">var</span><span class="w"> </span><span class="nx">tmp</span><span class="o">=</span><span class="nx">calculate_speed</span><span class="p">(</span><span class="nx">res</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">speedLight</span><span class="p">.</span><span class="nx">value</span><span class="p">,</span><span class="nx">res</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">speedHeavy</span><span class="p">.</span><span class="nx">value</span><span class="p">,</span><span class="nx">res</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">vehicleHeavy</span><span class="p">.</span><span class="nx">value</span><span class="p">,</span><span class="nx">res</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">vehicleLight</span><span class="p">.</span><span class="nx">value</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">                     </span><span class="k">if</span><span class="p">(</span><span class="nx">res</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">id</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">&quot;urn:ngsi-ld:Traffic:aveiro_radar:p1&quot;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">res</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">faixa</span><span class="p">.</span><span class="nx">value</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mf">1</span><span class="p">){</span><span class="w"></span>
+<span class="w">                        </span><span class="nx">dict</span><span class="p">.</span><span class="nx">p1_1</span><span class="p">.</span><span class="nx">speed</span><span class="o">=</span><span class="nx">tmp</span><span class="p">.</span><span class="nx">speed</span><span class="p">;</span><span class="w"></span>
+<span class="w">                        </span><span class="nx">dict</span><span class="p">.</span><span class="nx">p1_1</span><span class="p">.</span><span class="nx">color</span><span class="o">=</span><span class="nx">tmp</span><span class="p">.</span><span class="nx">color</span><span class="p">;</span><span class="w"></span>
+<span class="w">                        </span><span class="nx">dict</span><span class="p">.</span><span class="nx">p1_1</span><span class="p">.</span><span class="nx">vehicleCount</span><span class="o">=</span><span class="nx">tmp</span><span class="p">.</span><span class="nx">vehicleCount</span><span class="p">;</span><span class="w"></span>
+<span class="w">                     </span><span class="p">}</span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="p">(</span><span class="nx">res</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">id</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">&quot;urn:ngsi-ld:Traffic:aveiro_radar:p1&quot;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">res</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">faixa</span><span class="p">.</span><span class="nx">value</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mf">2</span><span class="p">){</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">                     </span><span class="p">...</span><span class="w"></span>
+<span class="w">               </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">            </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">         </span><span class="k">return</span><span class="w"> </span><span class="nx">dict</span><span class="p">;</span><span class="w"></span>
+<span class="w">   </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">   </span><span class="kd">function</span><span class="w"> </span><span class="nx">calculate_speed</span><span class="p">(</span><span class="nx">speed_ligeiro</span><span class="p">,</span><span class="nx">speed_pessado</span><span class="p">,</span><span class="nx">num_pesado</span><span class="p">,</span><span class="nx">num_ligeiro</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+
+<span class="w">         </span><span class="kd">var</span><span class="w"> </span><span class="nx">vehicleCount</span><span class="o">=</span><span class="nx">num_ligeiro</span><span class="o">+</span><span class="nx">num_pesado</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">         </span><span class="kd">var</span><span class="w"> </span><span class="nx">dict</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="nx">speed</span><span class="o">:</span><span class="w"> </span><span class="o">-</span><span class="mf">1</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="nx">color</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;#00FF00&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="nx">vehicleCount</span><span class="o">:</span><span class="w"> </span><span class="nx">vehicleCount</span><span class="w"></span>
+<span class="w">         </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">         </span><span class="kd">var</span><span class="w"> </span><span class="nx">med</span><span class="o">=</span><span class="mf">0</span><span class="p">;</span><span class="w"></span>
+<span class="w">         </span><span class="k">if</span><span class="p">(</span><span class="nx">num_ligeiro</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mf">0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">num_pesado</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">0</span><span class="p">){</span><span class="w"></span>
+<span class="w">            </span><span class="nx">med</span><span class="o">=</span><span class="nx">speed_pessado</span><span class="p">;</span><span class="w"></span>
+<span class="w">         </span><span class="p">}</span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="p">(</span><span class="nx">num_pesado</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mf">0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">num_ligeiro</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">0</span><span class="p">){</span><span class="w"></span>
+<span class="w">            </span><span class="nx">med</span><span class="o">=</span><span class="nx">speed_ligeiro</span><span class="p">;</span><span class="w"></span>
+<span class="w">         </span><span class="p">}</span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="p">(</span><span class="nx">num_ligeiro</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">num_pesado</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">0</span><span class="p">){</span><span class="w"></span>
+<span class="w">            </span><span class="nx">med</span><span class="o">=</span><span class="p">(</span><span class="nx">speed_ligeiro</span><span class="o">+</span><span class="nx">speed_pessado</span><span class="p">)</span><span class="o">/</span><span class="mf">2</span><span class="p">;</span><span class="w"></span>
+<span class="w">         </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">         </span><span class="nx">dict</span><span class="p">.</span><span class="nx">speed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">med</span><span class="o">*</span><span class="mf">18</span><span class="o">/</span><span class="mf">5</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">         </span><span class="k">if</span><span class="p">(</span><span class="nx">dict</span><span class="p">.</span><span class="nx">speed</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mf">20</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">vehicleCount</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mf">4</span><span class="p">){</span><span class="w"></span>
+<span class="w">            </span><span class="nx">dict</span><span class="p">.</span><span class="nx">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;#FF0000&quot;</span><span class="p">;</span><span class="w"></span>
+<span class="w">         </span><span class="p">}</span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="p">(</span><span class="nx">dict</span><span class="p">.</span><span class="nx">speed</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mf">40</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">vehicleCount</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mf">2</span><span class="p">){</span><span class="w"></span>
+<span class="w">            </span><span class="nx">dict</span><span class="p">.</span><span class="nx">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;#FFFF00&quot;</span><span class="p">;</span><span class="w"></span>
+<span class="w">         </span><span class="p">}</span><span class="k">else</span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="nx">dict</span><span class="p">.</span><span class="nx">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;#00FF00&quot;</span><span class="p">;</span><span class="w"></span>
+<span class="w">         </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">         </span><span class="k">return</span><span class="w"> </span><span class="nx">dict</span><span class="p">;</span><span class="w"></span>
+<span class="w">   </span><span class="p">}</span><span class="w"></span>
+
+<span class="p">},</span><span class="w"> </span><span class="mf">1000</span><span class="p">)</span><span class="w"></span>
+</pre></div>
+</div>
+<p>In the return we use the MapView component to display the map and the several roads using Polyline.</p>
+<p>MapView is used to display the map.
+(see <a class="reference external" href="https://github.com/react-native-maps/react-native-maps/blob/master/docs/mapview.md">https://github.com/react-native-maps/react-native-maps/blob/master/docs/mapview.md</a> )
+MapView we use the following atributes:</p>
+<ul class="simple">
+<li><p>ref: need to reference the map to use the animateToRegion method</p></li>
+<li><p>style: the style of the map to ocupy the full screen</p></li>
+<li><p>customMapStyle: style to simplify the map (remove the points of interest in the map)</p></li>
+<li><p>initialRegion: the initial region of the map ( center of Aveiro )</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">MapView</span>
+<span class="n">ref</span><span class="o">=</span><span class="p">{(</span><span class="nb">map</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span> <span class="n">this</span><span class="o">.</span><span class="n">map</span> <span class="o">=</span> <span class="nb">map</span><span class="p">;</span> <span class="p">}}</span>
+<span class="n">style</span><span class="o">=</span><span class="p">{</span><span class="n">styles</span><span class="o">.</span><span class="n">map</span><span class="p">}</span>
+<span class="n">customMapStyle</span><span class="o">=</span><span class="p">{</span> <span class="o">...</span> <span class="p">}</span>
+<span class="n">initialRegion</span><span class="o">=</span><span class="p">{{</span>
+    <span class="n">latitude</span><span class="p">:</span> <span class="mf">40.638495</span><span class="p">,</span>
+    <span class="n">longitude</span><span class="p">:</span> <span class="o">-</span><span class="mf">8.651443</span><span class="p">,</span>
+    <span class="n">latitudeDelta</span><span class="p">:</span> <span class="mf">0.02</span><span class="p">,</span>
+    <span class="n">longitudeDelta</span><span class="p">:</span> <span class="mf">0.02</span><span class="p">,</span>
+<span class="p">}}</span>
+<span class="o">&gt;</span>
+<span class="o">...</span>
+<span class="o">&lt;/</span><span class="n">MapView</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>Polyline is used to display the roads.
+(see <a class="reference external" href="https://github.com/react-native-maps/react-native-maps/blob/master/docs/polygon.md">https://github.com/react-native-maps/react-native-maps/blob/master/docs/polygon.md</a>)
+Polyline we use the following atributes:</p>
+<ul class="simple">
+<li><p>coordinates: an array of the coordinates of the road</p></li>
+<li><p>strokeColor: the color of the road</p></li>
+<li><p>strokeWidth: the width of the line</p></li>
+<li><p>lineDashPattern: the pattern of the line ( distance between the points of the road )</p></li>
+<li><p>tappable: if the road is tappable</p></li>
+<li><p>onPress: when the road is pressed an info menu will be displayed (see RBSheet next in this page)</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&lt;Polyline //! P1 favor
+   coordinates={RoadsData(&quot;p1_1&quot;)}
+   strokeColor={this.state.dict.p1_1.color}
+   strokeWidth={5}
+   lineDashPattern={[0]}
+   tappable={true}
+   onPress={() =&gt; {
+      this.RBSheet.open()
+      this.setState({
+         road_clicked_id: 11
+      })
+      }
+   }
+/&gt;
+</pre></div>
+</div>
+<p>RBSheet is used to display info about the road.
+RBSheet we use the following atributes:</p>
+<ul class="simple">
+<li><p>ref: need to reference the sheet to open onPress of the Polyline</p></li>
+<li><p><em>rest of the atributes</em>: see the documentation</p></li>
+</ul>
+<p>(see <a class="reference external" href="https://github.com/nysamnang/react-native-raw-bottom-sheet">https://github.com/nysamnang/react-native-raw-bottom-sheet</a>)</p>
+<p>Inside of the RBSheet we show the RoadInfoMenu and pass it the necessary information that it needs to show the user iformation about that bus.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="road_info_menu.html">RoadInfoMenu</a></li>
+</ul>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">RBSheet</span>
+   <span class="n">ref</span><span class="o">=</span><span class="p">{</span><span class="n">ref</span> <span class="o">=&gt;</span> <span class="p">{</span>
+      <span class="n">this</span><span class="o">.</span><span class="n">RBSheet</span> <span class="o">=</span> <span class="n">ref</span><span class="p">;}}</span>
+   <span class="n">height</span><span class="o">=</span><span class="p">{</span><span class="mi">200</span><span class="p">}</span>
+   <span class="n">closeOnDragDown</span><span class="o">=</span><span class="p">{</span><span class="n">true</span><span class="p">}</span>
+   <span class="n">animationType</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;fade&quot;</span><span class="p">}</span>
+   <span class="n">closeOnPressMask</span><span class="o">=</span><span class="p">{</span><span class="n">true</span><span class="p">}</span>
+   <span class="n">customStyles</span><span class="o">=</span><span class="p">{{</span>
+   <span class="n">wrapper</span><span class="p">:</span> <span class="p">{</span>
+      <span class="n">backgroundColor</span><span class="p">:</span> <span class="s2">&quot;transparent&quot;</span>
+   <span class="p">},</span>
+   <span class="n">draggableIcon</span><span class="p">:</span> <span class="p">{</span>
+      <span class="n">backgroundColor</span><span class="p">:</span> <span class="s2">&quot;#000&quot;</span>
+   <span class="p">}</span>
+   <span class="p">}}</span>
+<span class="o">&gt;</span>
+
+   <span class="o">&lt;</span><span class="n">RoadInfoMenu</span> <span class="nb">dict</span><span class="o">=</span><span class="p">{</span><span class="n">this</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">dict</span><span class="p">}</span> <span class="n">road_id</span><span class="o">=</span><span class="p">{</span><span class="n">this</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">road_clicked_id</span><span class="p">}</span><span class="o">/&gt;</span>
+<span class="o">&lt;/</span><span class="n">RBSheet</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="bus_schedule.html" class="btn btn-neutral float-left" title="BusSchedule" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="road_info_menu.html" class="btn btn-neutral float-right" title="RoadInfoMenu" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, PECI.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

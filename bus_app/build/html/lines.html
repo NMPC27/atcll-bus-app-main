@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lines &mdash; BusAppDoc 1.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="LineCard" href="line_card.html" />
+    <link rel="prev" title="BusInfoMenu" href="bus_info_menu.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> BusAppDoc
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="app.html">App</a></li>
+<li class="toctree-l1"><a class="reference internal" href="appjson.html">App json</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="screens.html">Screens</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="map_screen.html">MapScreen</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Lines</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="line_card.html">LineCard</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lines_table.html">LinesTable</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="bus_schedule.html">BusSchedule</a></li>
+<li class="toctree-l2"><a class="reference internal" href="live_traffic.html">LiveTraffic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="about.html">About</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="scripts.html">Scripts</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">BusAppDoc</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="screens.html">Screens</a> &raquo;</li>
+      <li>Lines</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/lines.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="lines">
+<h1>Lines<a class="headerlink" href="#lines" title="Permalink to this headline"></a></h1>
+<p>This screen shows the stops and the buses in each line as well as the estimated time of arrival of a bus in each stop of the respective line.</p>
+<p>In the state of this class we have the following variables:</p>
+<ul class="simple">
+<li><p>buses: its an array with all the info of the buses that we get from orion service.</p></li>
+<li><p>stops: its an array with all the stops (see scripts-&gt;stops_data).</p></li>
+<li><p>token: the token that we generate to be able to do requests to the orion service.</p></li>
+<li><p>Linha_selected: its a integer that stores the current line selected in the dropdown menu to later switch the information shown according to the line selected.</p></li>
+</ul>
+<p>Data stucture of buses in state.</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nx">buses</span><span class="o">:</span><span class="p">[</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="nx">id</span><span class="o">:</span><span class="mf">1</span><span class="p">,</span><span class="w"> </span><span class="c1">// bus id</span><span class="w"></span>
+<span class="w">            </span><span class="nx">lat</span><span class="o">:</span><span class="mf">40.633305</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="nx">lon</span><span class="o">:-</span><span class="mf">8.659190</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="nx">speed</span><span class="o">:</span><span class="w"> </span><span class="mf">33</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="nx">linha</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="mf">7</span><span class="p">],</span><span class="w"></span>
+<span class="w">            </span><span class="nx">eta</span><span class="o">:</span><span class="w"> </span><span class="mf">3</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="nx">next_stop</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Hello world1!&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="p">},</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="nx">id</span><span class="o">:</span><span class="mf">2</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="nx">lat</span><span class="o">:</span><span class="mf">40.636296</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="nx">lon</span><span class="o">:-</span><span class="mf">8.654267</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="nx">speed</span><span class="o">:</span><span class="w"> </span><span class="mf">34</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="nx">linha</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="mf">8</span><span class="p">],</span><span class="w"></span>
+<span class="w">            </span><span class="nx">eta</span><span class="o">:</span><span class="w"> </span><span class="mf">4</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="nx">next_stop</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Hello world2!&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">],</span><span class="w"></span>
+<span class="w">    </span><span class="p">...</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</pre></div>
+</div>
+<p>Inside the render() is generated the token that alows us to access the orion service of IT.
+Because answer from the service is not immediate we use promisses, when the device receives the answer from the orion service the token will be updated in the state to be used afterwards.
+(see scripts-&gt;token_generate for more details)</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">token</span><span class="o">==</span><span class="kc">null</span><span class="w"> </span><span class="p">){</span><span class="w"></span>
+<span class="w">    </span><span class="nx">generate_token</span><span class="p">().</span><span class="nx">then</span><span class="p">(</span><span class="w"></span>
+<span class="w">        </span><span class="nx">value</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">setState</span><span class="p">(</span><span class="w"> </span><span class="p">{</span><span class="nx">token</span><span class="o">:</span><span class="nx">value</span><span class="p">}</span><span class="w"> </span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</pre></div>
+</div>
+<p>To get the data from the orion service we use the token that we have generated in the previous step.
+To update the data from the buses we call the function sub() every second using the setTimeout(()=&gt; { code_here },1000) method.
+In The ‘sub’ Function (from the subscribe_orion script) we parse the token generated in the previous step and returns a json with the data of all current detected buses.
+Before we update the state we need to filter the data received, in the filter_orion function we generate an array to match our state data structure.
+In filter_orion we also check if the bus was detected at least 5 seconds ago, if it was we update the state with the new data. (if ( timeOfData &gt; (now- timeToDeleteBus) ))
+(see scripts-&gt;subscribe_orion for more details)</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">setTimeout</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">     </span><span class="nx">sub</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">token</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="w"></span>
+
+<span class="w">     </span><span class="nx">res</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">setState</span><span class="p">(</span><span class="w"> </span><span class="p">{</span><span class="nx">buses</span><span class="o">:</span><span class="nx">filter_orion</span><span class="p">(</span><span class="nx">res</span><span class="p">)}</span><span class="w"> </span><span class="p">));</span><span class="w"></span>
+
+<span class="w">     </span><span class="kd">function</span><span class="w"> </span><span class="nx">filter_orion</span><span class="p">(</span><span class="nx">value</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="kd">var</span><span class="w"> </span><span class="nx">data</span><span class="o">=</span><span class="p">[];</span><span class="w"></span>
+
+<span class="w">         </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">let</span><span class="w"> </span><span class="nx">i</span><span class="o">=</span><span class="mf">0</span><span class="p">;</span><span class="nx">i</span><span class="o">&lt;</span><span class="nx">value</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="o">++</span><span class="p">){</span><span class="w"></span>
+<span class="w">             </span><span class="kd">var</span><span class="w"> </span><span class="nx">obj</span><span class="o">=</span><span class="p">{</span><span class="w"></span>
+<span class="w">                 </span><span class="nx">id</span><span class="o">:</span><span class="nx">value</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">stationID</span><span class="p">.</span><span class="nx">value</span><span class="p">,</span><span class="w"></span>
+<span class="w">                 </span><span class="nx">lat</span><span class="o">:</span><span class="nx">value</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">location</span><span class="p">.</span><span class="nx">value</span><span class="p">.</span><span class="nx">coordinates</span><span class="p">[</span><span class="mf">1</span><span class="p">],</span><span class="w"></span>
+<span class="w">                 </span><span class="nx">lon</span><span class="o">:</span><span class="nx">value</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">location</span><span class="p">.</span><span class="nx">value</span><span class="p">.</span><span class="nx">coordinates</span><span class="p">[</span><span class="mf">0</span><span class="p">],</span><span class="w"></span>
+<span class="w">                 </span><span class="nx">speed</span><span class="o">:</span><span class="nb">Math</span><span class="p">.</span><span class="nx">round</span><span class="p">(</span><span class="nx">value</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">speed</span><span class="p">.</span><span class="nx">value</span><span class="o">*</span><span class="mf">18</span><span class="o">/</span><span class="mf">5</span><span class="p">),</span><span class="w"></span>
+<span class="w">                 </span><span class="nx">linha</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="mf">0</span><span class="p">],</span><span class="w"></span>
+<span class="w">                 </span><span class="nx">eta</span><span class="o">:</span><span class="w"> </span><span class="mf">0</span><span class="p">,</span><span class="w"></span>
+<span class="w">                 </span><span class="nx">next_stop</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;NaN&quot;</span><span class="w"></span>
+<span class="w">             </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">             </span><span class="kd">var</span><span class="w"> </span><span class="nx">timeOfData</span><span class="o">=</span><span class="w"> </span><span class="nb">Date</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">value</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">dateObserved</span><span class="p">.</span><span class="nx">value</span><span class="p">)</span><span class="w"></span>
+<span class="w">             </span><span class="kd">var</span><span class="w"> </span><span class="nx">now</span><span class="o">=</span><span class="nb">Date</span><span class="p">.</span><span class="nx">now</span><span class="p">()</span><span class="w"></span>
+
+<span class="w">             </span><span class="kd">var</span><span class="w"> </span><span class="nx">timeToDeleteBus</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">5</span><span class="o">*</span><span class="mf">1000</span><span class="p">;</span><span class="w"> </span><span class="c1">//! 5 sec para deletar bus</span><span class="w"></span>
+
+<span class="w">             </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="nx">timeOfData</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="p">(</span><span class="nx">now</span><span class="o">-</span><span class="w"> </span><span class="nx">timeToDeleteBus</span><span class="p">)</span><span class="w"> </span><span class="p">){</span><span class="w"></span>
+<span class="w">                 </span><span class="nx">data</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">obj</span><span class="p">);</span><span class="w"></span>
+<span class="w">             </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">         </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="nx">data</span><span class="p">;</span><span class="w"></span>
+<span class="w">     </span><span class="p">}</span><span class="w"></span>
+
+<span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="mf">1000</span><span class="p">)</span><span class="w"></span>
+</pre></div>
+</div>
+<p>The next segment of code serves to filter our bus data, in this case we only want to show the buses that are doing the line_selected by the user, to later send this data to the LineCard component (see screens-&gt;LineCard).</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="kd">const</span><span class="w"> </span><span class="nx">linhas</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;1&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;2/9&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;3&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;4&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;5/7&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;6&quot;</span><span class="p">,</span><span class="s2">&quot;8&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;10&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;11&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;12&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;13&quot;</span><span class="p">]</span><span class="w"></span>
+
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">line_selected</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">Linha_selected</span><span class="w"></span>
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">line_buses</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">buses</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">bus</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">bus</span><span class="p">.</span><span class="nx">linha</span><span class="p">.</span><span class="nx">includes</span><span class="p">(</span><span class="nx">line_selected</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">    </span><span class="p">});</span><span class="w"></span>
+</pre></div>
+</div>
+<p>Lastly we have the return of the render method.
+First we need a view component to wrap every other component. Then this component is divided in two parts: a View for the dropdown button and a ScrollView for the LineCard AND LinesTable components.
+For the dropdown button we use the SelectDropdown component from the react-native-material-dropdown library (see <a class="reference external" href="https://github.com/AdelRedaa97/react-native-select-dropdown">https://github.com/AdelRedaa97/react-native-select-dropdown</a> for more details). The data attribute will be our array of lines (‘linhas’) and the onSelect event triggers the update in the state of the class with the new line selected by the user.</p>
+<p>Then in the ScrollView we call the LineCard component (with filtered array of buses previously created ‘line_buses’, the stops of the line selected and the line_selected through props) and the LinesTable component.
+(see screens-&gt;LineCard and screens-&gt;LinesTable for more details).</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Dar update a documentação quando o lines table tiver os dados para receber.</p>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">return</span><span class="p">(</span>
+        <span class="o">&lt;</span><span class="n">View</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="n">View</span> <span class="n">style</span><span class="o">=</span><span class="p">{</span><span class="n">styles</span><span class="o">.</span><span class="n">dropdown</span><span class="p">}</span><span class="o">&gt;</span>
+                <span class="o">&lt;</span><span class="n">SelectDropdown</span>
+                        <span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="n">linhas</span><span class="p">}</span>
+                        <span class="n">defaultButtonText</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Escolha a linha&quot;</span><span class="p">}</span>
+                        <span class="n">onSelect</span><span class="o">=</span><span class="p">{(</span><span class="n">selectedItem</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+
+                            <span class="k">if</span> <span class="p">(</span><span class="n">selectedItem</span> <span class="o">===</span> <span class="s2">&quot;2/9&quot;</span><span class="p">){</span>
+                                <span class="n">this</span><span class="o">.</span><span class="n">setState</span><span class="p">(</span> <span class="p">{</span><span class="n">Linha_selected</span><span class="p">:</span><span class="mi">2</span><span class="p">}</span> <span class="p">)</span>
+                            <span class="p">}</span><span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">selectedItem</span> <span class="o">===</span> <span class="s2">&quot;5/7&quot;</span><span class="p">){</span>
+                                <span class="n">this</span><span class="o">.</span><span class="n">setState</span><span class="p">(</span> <span class="p">{</span><span class="n">Linha_selected</span><span class="p">:</span><span class="mi">5</span><span class="p">}</span> <span class="p">)</span>
+                            <span class="p">}</span><span class="k">else</span><span class="p">{</span>
+                                <span class="n">this</span><span class="o">.</span><span class="n">setState</span><span class="p">(</span> <span class="p">{</span><span class="n">Linha_selected</span><span class="p">:</span><span class="n">parseInt</span><span class="p">(</span><span class="n">selectedItem</span><span class="p">)}</span> <span class="p">)</span>
+                            <span class="p">}</span>
+                        <span class="p">}}</span>
+                        <span class="n">buttonTextAfterSelection</span><span class="o">=</span><span class="p">{(</span><span class="n">selectedItem</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+                            <span class="o">//</span> <span class="n">text</span> <span class="n">represented</span> <span class="n">after</span> <span class="n">item</span> <span class="ow">is</span> <span class="n">selected</span>
+                            <span class="o">//</span> <span class="k">if</span> <span class="n">data</span> <span class="n">array</span> <span class="ow">is</span> <span class="n">an</span> <span class="n">array</span> <span class="n">of</span> <span class="n">objects</span> <span class="n">then</span> <span class="k">return</span> <span class="n">selectedItem</span><span class="o">.</span><span class="n">property</span> <span class="n">to</span> <span class="n">render</span> <span class="n">after</span> <span class="n">item</span> <span class="ow">is</span> <span class="n">selected</span>
+                            <span class="k">return</span> <span class="n">selectedItem</span>
+                        <span class="p">}}</span>
+                <span class="o">/&gt;</span>
+            <span class="o">&lt;/</span><span class="n">View</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="n">ScrollView</span><span class="o">&gt;</span>
+                <span class="o">&lt;</span><span class="n">LineCard</span> <span class="n">buses</span><span class="o">=</span><span class="p">{</span><span class="n">line_buses</span><span class="p">}</span> <span class="n">lineStops</span> <span class="o">=</span> <span class="p">{</span><span class="n">LinesData</span><span class="p">(</span><span class="n">this</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">Linha_selected</span><span class="p">)}</span> <span class="n">line</span> <span class="o">=</span> <span class="p">{</span><span class="n">this</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">Linha_selected</span><span class="p">}</span> <span class="o">/&gt;</span>
+                <span class="o">&lt;</span><span class="n">Text</span> <span class="n">style</span><span class="o">=</span><span class="p">{{</span>  <span class="n">fontSize</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span>
+                                <span class="n">fontWeight</span><span class="p">:</span> <span class="s1">&#39;bold&#39;</span><span class="p">,</span>
+                                <span class="n">marginTop</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+                                <span class="n">textAlign</span><span class="p">:</span> <span class="s1">&#39;center&#39;</span><span class="p">,</span>
+                            <span class="p">}}</span><span class="o">&gt;</span> <span class="n">Horario</span> <span class="n">previsto</span> <span class="n">do</span> <span class="n">autocarro</span> <span class="o">&lt;/</span><span class="n">Text</span><span class="o">&gt;</span>
+                <span class="o">&lt;</span><span class="n">LinesTable</span><span class="o">/&gt;</span>
+            <span class="o">&lt;/</span><span class="n">ScrollView</span><span class="o">&gt;</span>
+
+        <span class="o">&lt;/</span><span class="n">View</span><span class="o">&gt;</span>
+    <span class="p">);</span>
+</pre></div>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="line_card.html">LineCard</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lines_table.html">LinesTable</a></li>
+</ul>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="bus_info_menu.html" class="btn btn-neutral float-left" title="BusInfoMenu" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="line_card.html" class="btn btn-neutral float-right" title="LineCard" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, PECI.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

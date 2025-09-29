@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LinesTable &mdash; BusAppDoc 1.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="BusSchedule" href="bus_schedule.html" />
+    <link rel="prev" title="LineCard" href="line_card.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> BusAppDoc
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="app.html">App</a></li>
+<li class="toctree-l1"><a class="reference internal" href="appjson.html">App json</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="screens.html">Screens</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="map_screen.html">MapScreen</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="lines.html">Lines</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="line_card.html">LineCard</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">LinesTable</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="bus_schedule.html">BusSchedule</a></li>
+<li class="toctree-l2"><a class="reference internal" href="live_traffic.html">LiveTraffic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="about.html">About</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="scripts.html">Scripts</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">BusAppDoc</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="screens.html">Screens</a> &raquo;</li>
+          <li><a href="lines.html">Lines</a> &raquo;</li>
+      <li>LinesTable</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/lines_table.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="linestable">
+<h1>LinesTable<a class="headerlink" href="#linestable" title="Permalink to this headline"></a></h1>
+<p>This component is used to display the table with the stops and respective time of arrival for each one of the stops in a respective line.</p>
+<p>In the render method, we use the DataTable component from the react native paper library (see <a class="reference external" href="https://callstack.github.io/react-native-paper/data-table.html">https://callstack.github.io/react-native-paper/data-table.html</a> for more information).</p>
+<p>Props:</p>
+<ul class="simple">
+<li><p>line: the current line selected in the lines menu</p></li>
+<li><p>token: token necessary to connect to ORION</p></li>
+</ul>
+<p>To get the prediction for the current line , we first run the script sub_PECI(see scripts-&gt;subscribe_PECI) and filter the data received with the filter_peci function and update the state with an array of stop-arrival time for each pair.</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="kd">var</span><span class="w"> </span><span class="nx">line</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">props</span><span class="p">.</span><span class="nx">line</span><span class="w"></span>
+
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">props</span><span class="p">.</span><span class="nx">line</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">curr_line</span><span class="w"> </span><span class="p">){</span><span class="w"></span>
+
+<span class="w">  </span><span class="nx">sub_PECI</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">props</span><span class="p">.</span><span class="nx">token</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="w"></span>
+<span class="w">    </span><span class="nx">res</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="k">this</span><span class="p">.</span><span class="nx">setState</span><span class="p">({</span><span class="nx">tableData</span><span class="o">:</span><span class="w"> </span><span class="nx">filter_peci</span><span class="p">(</span><span class="nx">res</span><span class="p">)});}</span><span class="w"></span>
+<span class="w">  </span><span class="p">)</span><span class="w"></span>
+
+<span class="w">  </span><span class="kd">function</span><span class="w"> </span><span class="nx">filter_peci</span><span class="p">(</span><span class="nx">value</span><span class="p">){</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">let</span><span class="w"> </span><span class="nx">i</span><span class="o">=</span><span class="mf">0</span><span class="p">;</span><span class="nx">i</span><span class="o">&lt;</span><span class="nx">value</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span><span class="w"> </span><span class="nx">i</span><span class="o">++</span><span class="p">){</span><span class="w"></span>
+<span class="w">      </span><span class="k">if</span><span class="p">(</span><span class="nx">value</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">dateObserved</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">null</span><span class="p">){</span><span class="k">continue</span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">value</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">busData</span><span class="p">.</span><span class="nx">value</span><span class="p">.</span><span class="nx">line</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nx">line</span><span class="p">){</span><span class="w"></span>
+
+<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="nx">dict</span><span class="o">=</span><span class="nx">value</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">busData</span><span class="p">.</span><span class="nx">value</span><span class="p">.</span><span class="nx">prediction</span><span class="w"></span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nb">Object</span><span class="p">.</span><span class="nx">keys</span><span class="p">(</span><span class="nx">dict</span><span class="p">).</span><span class="nx">length</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="mf">0</span><span class="p">){</span><span class="w"></span>
+<span class="w">          </span><span class="k">return</span><span class="w"> </span><span class="p">[[</span><span class="kc">null</span><span class="p">,</span><span class="s2">&quot;No prediction available&quot;</span><span class="p">]]</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="nx">items</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Object</span><span class="p">.</span><span class="nx">keys</span><span class="p">(</span><span class="nx">dict</span><span class="p">).</span><span class="nx">map</span><span class="p">(</span><span class="w"></span>
+<span class="w">          </span><span class="p">(</span><span class="nx">key</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="kd">var</span><span class="w"> </span><span class="nx">stop_idx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">StopsData</span><span class="p">().</span><span class="nx">findIndex</span><span class="p">(</span><span class="nx">x</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nb">parseInt</span><span class="p">(</span><span class="nx">x</span><span class="p">.</span><span class="nx">id</span><span class="p">)</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="nb">parseInt</span><span class="p">(</span><span class="nx">key</span><span class="p">));</span><span class="w"></span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="p">[</span><span class="nx">dict</span><span class="p">[</span><span class="nx">key</span><span class="p">],</span><span class="w"> </span><span class="nx">StopsData</span><span class="p">()[</span><span class="nx">stop_idx</span><span class="p">].</span><span class="nx">name</span><span class="p">]</span><span class="w"></span>
+<span class="w">          </span><span class="p">});</span><span class="w"></span>
+
+<span class="w">        </span><span class="nx">items</span><span class="p">.</span><span class="nx">sort</span><span class="p">();</span><span class="w"></span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">items</span><span class="w"></span>
+<span class="w">      </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">[[</span><span class="kc">null</span><span class="p">,</span><span class="s2">&quot;No bus in this line&quot;</span><span class="p">]]</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">  </span><span class="k">this</span><span class="p">.</span><span class="nx">setState</span><span class="p">({</span><span class="nx">curr_line</span><span class="o">:</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">props</span><span class="p">.</span><span class="nx">line</span><span class="p">})</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</pre></div>
+</div>
+<p>Then using the following code, we map all the data, coming from the state updated previously, into the table.</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span>{this.state.tableData.map((val, index) =&gt; {
+                return (
+                    &lt;DataTable.Row&gt;
+                        &lt;DataTable.Cell style={{flex: 5}} &gt;{ val[1] }&lt;/DataTable.Cell&gt;
+                        &lt;DataTable.Cell style={{ justifyContent: &#39;flex-end&#39;}}&gt;{ val[0] }&lt;/DataTable.Cell&gt;
+                    &lt;/DataTable.Row&gt;
+                    );
+
+        })}
+</pre></div>
+</div>
+<p>&lt;&gt;</p>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="line_card.html" class="btn btn-neutral float-left" title="LineCard" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="bus_schedule.html" class="btn btn-neutral float-right" title="BusSchedule" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, PECI.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

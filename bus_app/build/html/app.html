@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>App &mdash; BusAppDoc 1.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="App json" href="appjson.html" />
+    <link rel="prev" title="Installation" href="installation.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> BusAppDoc
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">App</a></li>
+<li class="toctree-l1"><a class="reference internal" href="appjson.html">App json</a></li>
+<li class="toctree-l1"><a class="reference internal" href="screens.html">Screens</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scripts.html">Scripts</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">BusAppDoc</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>App</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/app.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="app">
+<h1>App<a class="headerlink" href="#app" title="Permalink to this headline"></a></h1>
+<p>This file contains the main application code. From here we divide the app screens into a drawer menu as well as ask for permission to use the user’s gps location.</p>
+<p>(For more information about the drawer menu, see <a class="reference external" href="https://reactnavigation.org/docs/drawer-based-navigation/">https://reactnavigation.org/docs/drawer-based-navigation/</a>).</p>
+<p>First we ask for permission to use the user’s gps location through the expo-permissions library. (see <a class="reference external" href="https://docs.expo.dev/guides/permissions">https://docs.expo.dev/guides/permissions</a>).</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>the expo-permissions library is going to be deprecated soon, so at some point it’s possible that the user location marker will not be shown.</p>
+</div>
+<p>For that we create a function async named _getLocation which will be triggered with componentDidMount (componentDidMount is called when the component is mounted, in this case when the app launches).
+Then we wait for the response of the user that will be stored in the status const variable. When the user responds we check if the status is granted. If it isn’t, the app shows an alert to inform the user that the gps permission is needed to show their location on screen.</p>
+<p>In the render method we render our drawer menu (named MyDrawer) inside the navigation container.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">default</span> <span class="k">class</span> <span class="nc">App</span> <span class="n">extends</span> <span class="n">Component</span> <span class="p">{</span>
+
+    <span class="n">componentDidMount</span><span class="p">()</span> <span class="p">{</span>
+        <span class="n">this</span><span class="o">.</span><span class="n">_getLocation</span><span class="p">();</span>
+    <span class="p">}</span>
+
+    <span class="n">_getLocation</span> <span class="o">=</span> <span class="k">async</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+        <span class="n">const</span> <span class="p">{</span> <span class="n">status</span> <span class="p">}</span> <span class="o">=</span> <span class="k">await</span> <span class="n">Permissions</span><span class="o">.</span><span class="n">askAsync</span><span class="p">(</span><span class="n">Permissions</span><span class="o">.</span><span class="n">LOCATION</span><span class="p">);</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">status</span> <span class="o">!==</span> <span class="s1">&#39;granted&#39;</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">Alert</span><span class="o">.</span><span class="n">alert</span><span class="p">(</span>
+            <span class="s2">&quot;Permição de GPS não concedida&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Para poder ver a sua localização no mapa, é necessário que a permissão de GPS seja concedida. Por favor, reinicie a app e conceda a permissão.&quot;</span><span class="p">,</span>
+            <span class="p">[</span>
+            <span class="p">{</span> <span class="n">text</span><span class="p">:</span> <span class="s2">&quot;OK&quot;</span><span class="p">}</span>
+            <span class="p">]</span>
+        <span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="n">render</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="p">(</span>
+        <span class="o">&lt;</span><span class="n">NavigationContainer</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="n">MyDrawer</span><span class="o">/&gt;</span>
+        <span class="o">&lt;/</span><span class="n">NavigationContainer</span><span class="o">&gt;</span>
+        <span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The MyDrawer component is our component for the menu, it’s divided in Drawer.Screen’s , one for each screen of the app (Home,Lines,BusShedule,LiveTraffic,About).)</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">const</span> <span class="n">Drawer</span> <span class="o">=</span> <span class="n">createDrawerNavigator</span><span class="p">();</span>
+
+<span class="n">function</span> <span class="n">MyDrawer</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="o">&lt;</span><span class="n">Drawer</span><span class="o">.</span><span class="n">Navigator</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="n">Drawer</span><span class="o">.</span><span class="n">Screen</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Home&quot;</span> <span class="n">component</span><span class="o">=</span><span class="p">{</span><span class="n">Home</span><span class="p">}</span><span class="o">/&gt;</span>
+        <span class="o">&lt;</span><span class="n">Drawer</span><span class="o">.</span><span class="n">Screen</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Lines&quot;</span> <span class="n">component</span><span class="o">=</span><span class="p">{</span><span class="n">LinesMenu</span><span class="p">}</span> <span class="o">/&gt;</span>
+        <span class="o">&lt;</span><span class="n">Drawer</span><span class="o">.</span><span class="n">Screen</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Bus Schedule&quot;</span> <span class="n">component</span><span class="o">=</span><span class="p">{</span><span class="n">Schedule</span><span class="p">}</span> <span class="o">/&gt;</span>
+        <span class="o">&lt;</span><span class="n">Drawer</span><span class="o">.</span><span class="n">Screen</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Live Traffic&quot;</span> <span class="n">component</span><span class="o">=</span><span class="p">{</span><span class="n">LiveTrafficPage</span><span class="p">}</span> <span class="o">/&gt;</span>
+        <span class="o">&lt;</span><span class="n">Drawer</span><span class="o">.</span><span class="n">Screen</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;About&quot;</span> <span class="n">component</span><span class="o">=</span><span class="p">{</span><span class="n">AboutPage</span><span class="p">}</span> <span class="o">/&gt;</span>
+        <span class="o">&lt;/</span><span class="n">Drawer</span><span class="o">.</span><span class="n">Navigator</span><span class="o">&gt;</span>
+    <span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="installation.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="appjson.html" class="btn btn-neutral float-right" title="App json" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, PECI.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
